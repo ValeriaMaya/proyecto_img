@@ -36,4 +36,4 @@ class Imagen:
         self.tags = []
     def etiquetar(self,tags):
         for i in tags:
-            self.tags.append(
+            self.tags.append()
