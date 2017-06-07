@@ -37,3 +37,35 @@ class Imagen:
     def etiquetar(self,tags):
         for i in tags:
             self.tags.append()
+
+def tag(numID,tag,ob_img):
+    for i in ob_img:
+        if i.num == numID:
+            i.tags.append(tag)
+
+for i in ob_img:
+    im_temp = i
+    imagen =  Image.open(i.ruta())
+    try:
+        Image.open(i.ruta()).save(i.ruta()+".gif")
+    except IOError:
+        print("No se puede convertir la imagen")
+    imagen1 = PhotoImage(file=i.ruta()+".gif")
+    ventana = Tk()
+    ventana.title("Clasificador de Imagenes")
+    ventana.config(bg="gray")
+    ventana.geometry("600x700")
+
+    Label = Label(ventana,image=imagen1)
+    Label.grid(row=2,column=1)
+
+    boton_verdes = Bottom(ventana, text="Ojos verdes", command = tag(im_temp,"Ojos verdes",ob_img))
+    boton_verdes.grid(row=1,column=1)
+
+    boton_negros = Bottom(ventana, text="Ojos negros", command = tag(im_temp,"Ojos negro",ob_img))
+    boton_negros.grid(row=1,column=2)
+
+    boton_azules = Bottom(ventana, text="Ojos azules", command = tag(im_temp,"Ojos azules",ob_img))
+    boton_azules.grid(row=1,column=2)
+
+    ventana.mainloop()
