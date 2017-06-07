@@ -23,9 +23,11 @@ def nom_file(nombre_carpeta):
     global path_carpeta
     global nom_img
     path_carpeta = directorio_trabajo + '/'+ nombre_carpeta
+####    ## Ojo este return forza a salir de la funcion el codigo siguiente ya no se ejecuta
     return path_carpeta
     nom_img = os.listdir(path_carpeta)
     return nom_img
+
 
 #Funcion que crea objeto imagen por cada imagen de carpeta
 def crear_ob_img():
@@ -53,6 +55,7 @@ def tag(numID,tag,ob_img):
         if i.num == numID:
             i.tags.append(tag)
 def main():
+    ### ELiminar este ciclo para utilizar los eventos de la ventana
     for i in ob_img:
         im_temp = i
         imagen =  Image.open(i.ruta())
