@@ -34,9 +34,6 @@ class Imagen:
         self.ruta = ''
         self.num = None
         self.tags = []
-    def etiquetar(self,tags):
-        for i in tags:
-            self.tags.append()
 
 def tag(numID,tag,ob_img):
     for i in ob_img:
