@@ -57,8 +57,9 @@ def tag(numID,tag,ob_img):
             
 #Funcion que abre en el formato gif a una imagen
 def abrir_img(path_img):
+  path_temp = path_img +".gif"
   try:
-      Image.open(i.ruta()).save(path_temp)
+      Image.open(path_img).save(path_temp)
   except IOError:
       print("No se puede convertir la imagen")
   imagen1 = PhotoImage(file=path_temp)
@@ -113,3 +114,4 @@ for i in path_carpetas:
     final_de_archivo = archivo.tell()
     archivo.write(nueva_linea)
     archivo.seek(final_de_archivo)
+    archivo.close()
