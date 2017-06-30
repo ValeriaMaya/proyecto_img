@@ -38,6 +38,9 @@ def nom_files(path_carpeta):
     for i in nom_img_temp:
         if os.path.isdir(path_carpeta + "/"+i)==False:
             nom_img.append(i)
+    for i in nom_img:
+        if i.startswith("."):
+            nom_img.remove(i)
     return nom_img
 
 #Funcion que crea objeto imagen por cada imagen de carpeta a partir de sus nombres (lista nom_img) y devuelve una la lista de tales objetos
@@ -57,7 +60,7 @@ def crear_ob_img(nom_img,path_carpeta):
 
 #Funcion que agrega una etiqueta a un objetos por su número de identificacion
 def tag(numID,tag,ob_img):
-    if tag ! = '':
+    if tag != '':
         for i in ob_img:
             if i.num == numID:
                 i.tags.append(tag)
@@ -70,12 +73,12 @@ def abrir_img(path_img):
 
 def buscar_avance(path_carpeta):
     dirct = os.listdir(path_carpeta)
-    avance = open('avance.txt','a')
+    avance = open('avance.txt','a+')
     s = len(avance.readlines())
     return s
 
 def guardar_avance(avance):
-    archivo = open("avance.txt", "w")
+    archivo = open("avance.txt", "a+")
     for i in avance:
         nueva_linea = [i.nom,i.tags]
         contenido = archivo.read()
@@ -84,57 +87,55 @@ def guardar_avance(avance):
         archivo.seek(final_de_archivo)
         archivo.close()
 
-def actualizarLabel(clave,lable,num,ob_img):
-    if clave == anterior:
+def actualizarLabel(clave,num,ob_img):
+    if clave == 'anterior':
         if num-1>=0:
-            new_label = label.config(image = abrir_img(ob_img[num-1].ruta))
-            mostrar_interfaz(ob_img,path_carpeta,new_label)
+            mostrar_interfaz(ob_img,num)
 
         else:
             print "No hay imagen anterior"
     else:
         if num+1< len(ob_img):
-            new_label = label.config(image = abrir_img(ob_img[num+1].ruta))
-            mostrar_interfaz(ob_img,path_carpeta,new_label)
+            mostrar_interfaz(ob_img,num)
         else:
             print "No hay imagen siguiente"
 
-def mostrar_interfaz(ob_img,label):
+def mostrar_interfaz(ob_img,num_str):
     avance = []
-    for i in ob_img:
-        if ob_img[i].tags!=[]:
-            avance.append([i.nom,i.tags])
+    num = int(num_str)
     ventana = Tk()
     ventana.title("Clasificador de Imagenes")
     ventana.config(bg="gray")
     ventana.geometry("600x700")
 
-    label = label
+    tkimage = abrir_img(ob_img[num].ruta)
+    label = label = Label(ventana,image = tkimage)
+    label.image = tkimage
     label.grid(row=1,column=2)
 
-    anterior = Button(root,text="anterior",relief=FLAT)
-    anterior.bind(<Button-1>, actualizarLabel(anterior,label,num,ob_img))
+    anterior = Button(ventana,text="anterior",relief=FLAT)
+    anterior.bind('<Button-1>', actualizarLabel('anterior',num-1,ob_img))
     anterior.grid(row=3,column=2)
 
 
-    siguiente = Button(root,text="siguiente",relief=FLAT)
-    siguiente.bind(<Button-1>, actualizarLabel(siguiente,label,num,ob_img) )
+    siguiente = Button(ventana,text="siguiente",relief=FLAT)
+    siguiente.bind('<Button-1>', actualizarLabel('siguiente',num+1,ob_img) )
     siguiente.grid(row=3,column=2)
 
     caja = Entry(ventana,textvariable = nueva_etiqueta)
     caja.grid(row=2,column=2)
     etiqueta = caja.get()
 
-    enviar = Button(root,text="Etiquetar",relief=FLAT)
-    enviar.bind(<Button-1>, tag(ob_img[num].num,etiqueta,ob_img) )
+    enviar = Button(ventana,text="Etiquetar",relief=FLAT)
+    enviar.bind('<Button-1>', tag(ob_img[num].num,etiqueta,ob_img))
     enviar.grid(row=2,column=3)
 
-    save = Button(root,text="Guardar",relief=FLAT)
-    save.bind(<Button-1>, guardar_avance(avance) )
+    save = Button(ventana,text="Guardar",relief=FLAT)
+    save.bind('<Button-1>', guardar_avance(avance) )
     save.grid(row=3,column=2)
 
-    finish = Button(root,text="Salir",relief=FLAT)
-    finish.bind(<Button-1>, ventana.quit )
+    finish = Button(ventana,text="Salir",relief=FLAT)
+    finish.bind('<Button-1>', ventana.quit )
     finish.grid(row=3,column=2)
 
     ventana.mainloop()
@@ -180,24 +181,26 @@ def mostrar_etiquetadas(img_para_mostrar,n):
                 ventana.config(bg="gray")
                 ventana.geometry("600x700")
 
-                label = Label(ventana, image = abrir_img(img_para_mostrar[n].ruta))
+                tkimage = abrir_img(ob_img[n].ruta)
+                label = label = Label(ventana,image = tkimage)
+                label.image = tkimage
                 label.grid(row=3,column=2)
 
-                anterior = Button(root,text="anterior",relief=FLAT)
-                anterior.bind(<Button-1>, mostrar_etiquetadas(img_para_mostrar,n-1))
+                anterior = Button(ventana,text="anterior",relief=FLAT)
+                anterior.bind('<Button-1>', mostrar_etiquetadas(img_para_mostrar,n-1))
                 anterior.grid(row=4,column=1)
 
-                siguiente = Button(root,text="siguiente",relief=FLAT)
-                siguiente.bind(<Button-1>, mostrar_etiquetadas(img_para_mostrar,n+1))
+                siguiente = Button(ventana,text="siguiente",relief=FLAT)
+                siguiente.bind('<Button-1>', mostrar_etiquetadas(img_para_mostrar,n+1))
                 siguiente.grid(row=4,column=3)
 
-                finish = Button(root,text="Salir",relief=FLAT)
-                finish.bind(<Button-1>, ventana.quit )
+                finish = Button(ventana,text="Salir",relief=FLAT)
+                finish.bind('<Button-1>', ventana.quit )
                 finish.grid(row=6,column=3)
 
                 ventana.mainloop()
-        else:
-            print "No hay imagenes"
+    else:
+        print "No hay imagenes"
 
 ###PROGRAMA PRINCIPAL###
 
@@ -213,10 +216,8 @@ for i in path_carpetas:
         ob_img.append(j)
 for i in ob_img:
     print [i.num,i.nom,i.ruta]
-
 num = buscar_avance(path_carpeta)
-label = Label(ventana, image = abrir_img(ob_img[num].ruta))
 if num < len(ob_img):
-    mostrar_interfaz(ob_img, path_carpeta,label)
+    mostrar_interfaz(ob_img,num)
 else:
     buscador(ob_img)
